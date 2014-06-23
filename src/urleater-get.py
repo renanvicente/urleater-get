@@ -44,7 +44,7 @@ def find_all_files(path):
 Function to get all vhosts names
 '''
 def get_vhosts_name(path):
-  NAMES_VHOST_RE = compile(r'^(\s+)?(ServerAlias|ServerName)\s(.+)',IGNORECASE)
+  NAMES_VHOST_RE = compile(r'^(\s+)?(ServerAlias|ServerName|server_name)\s(.+)',IGNORECASE)
   vhosts = ''
   for file in find_all_files(path):
     if file is not 'default':
