@@ -27,9 +27,19 @@ Function to find all vhost files
 
 def check_system():
   if isfile('/etc/debian_version'):
-    directory = '/etc/apache2/sites-enabled'
+    if isdir('/etc/apache2/sites-enabled'):
+      directory = '/etc/apache2/sites-enabled'
+    elif isdir('/etc/nginx/sites-enabled'):
+      directory = '/etc/nginx/sites-enabled'
+    elif isdir('/etc/nginx/conf.d'):
+      directory = '/etc/nginx/conf.d'
   elif isfile('/etc/redhat-version'):
-    directory = '/etc/httpd/sites-enabled'
+    if isdir('/etc/httpd/sites-enabled'):
+      directory = '/etc/httpd/sites-enabled'
+    elif isdir('/etc/nginx/sites-enabled'):
+      directory = '/etc/nginx/sites-enabled'
+    elif isdir('/etc/nginx/conf.d'):
+      directory = '/etc/nginx/conf.d'
   else:
     directory = None
     print('system not supported yet')
