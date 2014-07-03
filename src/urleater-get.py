@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from os.path import join,isfile,realpath,dirname
+from os.path import join,isfile,realpath,dirname,isdir
 from os import walk
 from sys import exit
 from fnmatch import fnmatch
@@ -27,19 +27,19 @@ Function to find all vhost files
 
 def check_system():
   if isfile('/etc/debian_version'):
-    if isdir('/etc/apache2/sites-enabled'):
+    if isdir('/etc/nginx/sites-enabled'):
+      directory = '/etc/nginx/sites-enabled'
+    elif isdir('/etc/nginx/conf.d'):
+      directory = '/etc/nginx/conf.d'
+    elif isdir('/etc/apache2/sites-enabled'):
       directory = '/etc/apache2/sites-enabled'
-    elif isdir('/etc/nginx/sites-enabled'):
-      directory = '/etc/nginx/sites-enabled'
-    elif isdir('/etc/nginx/conf.d'):
-      directory = '/etc/nginx/conf.d'
   elif isfile('/etc/redhat-version'):
-    if isdir('/etc/httpd/sites-enabled'):
-      directory = '/etc/httpd/sites-enabled'
-    elif isdir('/etc/nginx/sites-enabled'):
+    if isdir('/etc/nginx/sites-enabled'):
       directory = '/etc/nginx/sites-enabled'
     elif isdir('/etc/nginx/conf.d'):
       directory = '/etc/nginx/conf.d'
+    elif isdir('/etc/httpd/sites-enabled'):
+      directory = '/etc/httpd/sites-enabled'
   else:
     directory = None
     print('system not supported yet')
@@ -97,24 +97,25 @@ def ConfigSectionMap(section):
 def getConfigValues(section,filename=dirname(realpath(__file__)) + '/urleater.conf'):
   Config.read(filename)
   if section == 'server':
-    if ConfigSectionMap(section)['server']:
+    if ConfigSectionMap(section).has_key('server'):
       server = ConfigSectionMap(section)['server']
-    if ConfigSectionMap(section)['port']:
+    if ConfigSectionMap(section).has_key('port'):
       port = int(ConfigSectionMap(section)['port'])
     config_dict = {'server': server, 'port': port }
   else:
-    if ConfigSectionMap(section)['hostname']:
+    if ConfigSectionMap(section).has_key('hostname'):
       hostname = ConfigSectionMap(section)['hostname']
     else:
       hostname = gethostname()
-    if ConfigSectionMap(section)['customer']:
+    if ConfigSectionMap(section).has_key('customer'):
       customer   = ConfigSectionMap(section)['customer']
     else:
       customer   = 'others'
-    if ConfigSectionMap(section)['vhost_directory']:
+    if ConfigSectionMap(section).has_key('vhost_directory'):
       vhost_directory = ConfigSectionMap(section)['vhost_directory']
     else:
       vhost_directory = check_system()
+    print vhost_directory
     config_dict = {'hostname': hostname, 'customer': customer , 'directory': vhost_directory }
   return config_dict
   
