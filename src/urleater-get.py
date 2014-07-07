@@ -32,7 +32,7 @@ def check_system():
     elif isdir('/etc/nginx/conf.d'):
       directory = '/etc/nginx/conf.d'
     elif isdir('/etc/apache2/sites-enabled'):
-      directory = '/etc/apache2/sites-enabled'
+      directory = '/etc/apache2/sites-enabled',
   elif isfile('/etc/redhat-version'):
     if isdir('/etc/nginx/sites-enabled'):
       directory = '/etc/nginx/sites-enabled'
@@ -53,17 +53,18 @@ def find_all_files(path):
 '''
 Function to get all vhosts names
 '''
-def get_vhosts_name(path):
+def get_vhosts_name(paths):
   NAMES_VHOST_RE = compile(r'^(\s+)?(ServerAlias|ServerName|server_name)\s(.+)',IGNORECASE)
   vhosts = ''
-  for file in find_all_files(path):
-    if file is not 'default':
-      vhostfile = open(file,'r')
-      for linha in vhostfile:
-        match = NAMES_VHOST_RE.match(linha)
-        if match is not None:
-          if 'default'  not in match.group(3):
-            vhosts += match.group(3).strip() + ' '
+  for path in paths:
+    for file in find_all_files(path):
+      if file is not 'default':
+        vhostfile = open(file,'r')
+        for linha in vhostfile:
+          match = NAMES_VHOST_RE.match(linha)
+          if match is not None:
+            if 'default'  not in match.group(3):
+              vhosts += match.group(3).strip() + ' '
   return vhosts
 
 
