@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from os.path import join,isfile,realpath,dirname,isdir
 from os import walk
-from sys import exit
+from sys import exit, stderr
 from fnmatch import fnmatch
 from re import compile,IGNORECASE
 from json import dumps, loads
@@ -33,6 +33,10 @@ def check_system():
       directory = '/etc/nginx/conf.d'
     elif isdir('/etc/apache2/sites-enabled'):
       directory = '/etc/apache2/sites-enabled',
+    else:
+      directory = None
+      print >> stderr, ('No directory to search')
+      exit(1)
   elif isfile('/etc/redhat-version'):
     if isdir('/etc/nginx/sites-enabled'):
       directory = '/etc/nginx/sites-enabled'
@@ -40,6 +44,10 @@ def check_system():
       directory = '/etc/nginx/conf.d'
     elif isdir('/etc/httpd/sites-enabled'):
       directory = '/etc/httpd/sites-enabled'
+    else:
+      directory = None
+      print >> stderr, ('No directory to search')
+      exit(1)
   else:
     directory = None
     print('system not supported yet')
