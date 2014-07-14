@@ -37,7 +37,7 @@ def check_system():
       directory = None
       print >> stderr, ('No directory to search')
       exit(1)
-  elif isfile('/etc/redhat-version'):
+  elif isfile('/etc/redhat-release'):
     if isdir('/etc/nginx/sites-enabled'):
       directory = '/etc/nginx/sites-enabled'
     elif isdir('/etc/nginx/conf.d'):
