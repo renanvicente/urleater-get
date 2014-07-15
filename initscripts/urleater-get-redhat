@@ -1,0 +1,82 @@
+#!/bin/sh
+ 
+### BEGIN INIT INFO
+# Provides:          urleater-get
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: get urls from vhosts
+# Description:       get urls from vhosts and send to urleater
+### END INIT INFO
+ 
+# Change the next 3 lines to suit where you install your script and what you want to call it
+DIR=/usr/local/bin/urleater-get
+DAEMON=$DIR/urleater-get.py
+DAEMON_NAME=urleater-get
+CONFIG="/etc/urleater-get.conf"
+DAEMON_OPS="--config $CONFIG"
+# This next line determines what user the script runs as.
+# Root generally not recommended but necessary if you are using the Raspberry Pi GPIO from Python.
+DAEMON_USER=root
+ 
+# Source function library.
+. /etc/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+lockfile="/var/lock/subsys/$DAEMON_NAME"
+
+if [ -f /lib/lsb/init-functions ];then
+  . /lib/lsb/init-functions
+else
+  . /etc/init.d/functions
+fi
+
+do_start () {
+
+    [ "$EUID" != "0" ] && exit 4
+    [ "$NETWORKING" = "no" ] && exit 1
+    [ -x $DAEMON ] || exit 5
+    [ -f $CONFIG ] || exit 6
+
+      echo -n $"Starting system $DAEMON_NAME daemon"
+      daemon $DAEMON $DAEMON_OPS &
+      RETVAL=$?
+      [ $RETVAL -eq 0 ] && touch $lockfile
+      return $RETVAL
+}
+
+do_stop() {
+        [ "$EUID" != "0" ] && exit 4
+        echo -n $"Shutting down $DAEMON_NAME: "
+        killproc $DAEMON_NAME
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f $lockfile
+        return $RETVAL
+}
+
+
+case "$1" in
+ 
+    start|stop)
+        do_${1}
+        ;;
+ 
+    restart|reload|force-reload)
+        do_stop
+        do_start
+        ;;
+ 
+    status)
+        status "$DAEMON_NAME"
+        ;;
+    *)
+        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|restart|status}"
+        exit 1
+        ;;
+ 
+esac
+exit 0
