@@ -9,7 +9,7 @@ if [ -f /etc/debian_version ];then
 elif [ -f /etc/redhat-release ];then
   cp $DIR/initscripts/urleater-get-redhat /etc/init.d/urleater-get
   chkconfig --add urleater-get 
-  chkconfig urleater on
+  chkconfig urleater-get on
 else
   echo 'System not supported'
 fi
