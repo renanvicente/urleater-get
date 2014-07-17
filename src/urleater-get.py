@@ -32,7 +32,7 @@ def check_system():
     elif isdir('/etc/nginx/conf.d'):
       directory = '/etc/nginx/conf.d'
     elif isdir('/etc/apache2/sites-enabled'):
-      directory = '/etc/apache2/sites-enabled',
+      directory = '/etc/apache2/sites-enabled'
     else:
       directory = None
       print >> stderr, ('No directory to search')
