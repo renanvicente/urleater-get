@@ -95,9 +95,9 @@ def send_data(server,server_port,path,hostname,customer):
                  'ip':  ip,
                  'urls': get_vhosts_name(path) }
   sock.send(dumps(vhost_dict))
-  result = loads(sock.recv(1024))
-  print result
-
+#  result = loads(sock.recv(1024))
+#  print result
+  sock.close()
 
 def ConfigSectionMap(section):
     dict1 = {}
