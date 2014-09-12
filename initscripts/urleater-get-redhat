@@ -51,7 +51,8 @@ do_start () {
 do_stop() {
         [ "$EUID" != "0" ] && exit 4
         echo -n $"Shutting down $DAEMON_NAME: "
-        killproc $DAEMON_NAME
+        #killproc $DAEMON_NAME
+        kill $(ps aux | grep $DAEMON_NAME | grep -v grep | awk '{print $2}')
         RETVAL=$?
         echo
         [ $RETVAL -eq 0 ] && rm -f $lockfile
